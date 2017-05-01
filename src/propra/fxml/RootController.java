@@ -118,6 +118,12 @@ public class RootController implements SaveImageCallable {
                 "fxml/SimpleGeneratorView.fxml");
     }    
 
+    @FXML
+    private void showConwayGeneratorView() {
+        showSpecializedGeneratorView("Conway Generator",
+                "fxml/ConwayGeneratorView.fxml");
+    }      
+    
     /**
      * Displays a new view of a specialized Generator.
      * 
