@@ -50,7 +50,7 @@ public class ConwayGeneratorModel extends GeneratorModel {
     // for changes
     // tutorial on properties:
     // https://docs.oracle.com/javase/8/javafx/properties-binding-tutorial/binding.htm
-    private final IntegerProperty width = new SimpleIntegerProperty(400); 
+    private final IntegerProperty width = new SimpleIntegerProperty(600); 
     private final IntegerProperty height = new SimpleIntegerProperty(400);
     
     public ConwayGeneratorModel() {
@@ -154,12 +154,13 @@ public class ConwayGeneratorModel extends GeneratorModel {
         PixelWriter cell;
         cell = canvas.getGraphicsContext2D().getPixelWriter();
 
-        Board board = new Board(w);
-        //board.toConsole();
+        Board board = new Board(4,4,0.5);
+        board.toConsole();
+        board = board.getNextGeneration();
         
         boolean[][] grid = board.getGrid();
         for (int x=0; x < grid.length; x++) {
-            for (int y=0; y < grid.length; y++) {
+            for (int y=0; y < grid[x].length; y++) {
                 if (grid[x][y]){
                     cell.setColor(x, y, Color.RED);
                 }
