@@ -101,7 +101,7 @@ public class Board {
         
         for (int w=0; w < this.getWidth(); w++) {
             for (int h=0; h < this.getHeight(); h++) {
-                System.out.println("n:" + this.getAmountMooreNeighbors(w, h));
+                System.out.println("[" + w + "," + h + "] has " + this.getAmountMooreNeighbors(w, h) + "neighbors");
                 //switch( this.getAmountMooreNeighbors(w, h) ) {
                 
                 //}
@@ -118,11 +118,11 @@ public class Board {
     private int getAmountMooreNeighbors(int x, int y) {
         int neighborsAliveCount = 0 ;
         for (int xn = x-1; xn <= x+1; xn++) {
-            for (int yn = y-1; yn <= x+1; yn++) {
-                System.out.print("[" + xn + ":" + yn + "]");
-                if ( //-- check whether I am still on the board and the cell is alive
+            for (int yn = y-1; yn <= y+1; yn++) {
+                if ( //-- check whether I am still on the board and the cell, other than myself, is alive
                     xn >=0 && xn < this.getWidth() &&
                     yn >=0 && yn < this.getHeight() &&
+                    !(x == xn && y == yn) && //-- don't count myself
                     this.grid[xn][yn]
                    ){
                     neighborsAliveCount++;
