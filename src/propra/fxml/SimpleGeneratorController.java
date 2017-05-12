@@ -25,8 +25,6 @@ package propra.fxml;
 
 import propra.model.GeneratorModel;
 import propra.model.SimpleGeneratorModel;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
@@ -50,8 +48,11 @@ public class SimpleGeneratorController extends GeneratorController {
     
     /**
      * This automatically called method creates a new SimpleGeneratorModel and 
-     * links it with its view correctly, so that changes on one of them gets
-     * reflected in the other.
+     * links it with its view, so that changes on the view get reflected in the
+     * model (if they are allowed in the model). 
+     * 
+     * Note that the view does not get updated if the model is changed from
+     * anywhere else besides the very view.
      * 
      */      
     @Override
@@ -67,57 +68,52 @@ public class SimpleGeneratorController extends GeneratorController {
                 String.valueOf(model.getHeight()));
         
         // change model if user changes something on the view
-        textFieldWidth.focusedProperty().addListener(
-                new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> arg0,
-                    Boolean oldValue, Boolean newValue) {
-                // newValue = 0  means no focus
-                if (!newValue) { // when textfield loses focus
-                    model.setWidth(textFieldWidth.textProperty().getValue());
-                    // display current value from model (for bad user entry)
-                    textFieldWidth.textProperty().set(
+        
+        textFieldWidth.focusedProperty().addListener((observableBoolean,
+                oldValue, newValue) -> {
+            if (!newValue){ // newValue=0 means no focus -> if no longer focused
+                try {
+                    String s = textFieldWidth.textProperty().getValue();
+                    int w = Integer.parseInt(s);
+                    model.setWidth(w);
+                } catch (IllegalArgumentException ex) {
+                    // catches both the possible NumberFormatException from
+                    // parseInt() as well as the possible IllegalArgumentExcept.
+                    // from SimpleGeneratorModel.setWidth(..)
+                    
+                    // display last valid value for width from model
+                    textFieldWidth.textProperty().setValue(
                             String.valueOf(model.getWidth()));
+                    showInputAlert("Width requires an integer value between 1" +
+                            " and 3000.");
                 }
             }
         });
-        textFieldHeight.focusedProperty().addListener(
-                new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> arg0,
-                    Boolean oldValue, Boolean newValue) {
-                // newValue = 0  means no focus
-                if (!newValue) { // when textfield loses focus
-                    model.setHeight(textFieldHeight.textProperty().getValue());
-                    // display current value from model (for bad user entry)
-                    textFieldHeight.textProperty().set(
+
+        textFieldHeight.focusedProperty().addListener((observableBoolean,
+                oldValue, newValue) -> {
+            if (!newValue){ // newValue=0 means no focus -> if no longer focused
+                try {
+                    String s = textFieldHeight.textProperty().getValue();
+                    int h = Integer.parseInt(s);
+                    model.setHeight(h);
+                } catch (IllegalArgumentException ex) {
+                    // catches both the possible NumberFormatException from
+                    // parseInt() as well as the possible IllegalArgumentExcept.
+                    // from SimpleGeneratorModel.setHeight(..)
+                    
+                    // display last valid value for width from model
+                    textFieldHeight.textProperty().setValue(
                             String.valueOf(model.getHeight()));
+                    showInputAlert("Heigth requires an integer value between 1"+
+                            " and 3000.");
                 }
             }
         });
         
-        // change view if something changes on the model
-        // this may be good for the future, for example if one input parameter
-        // sets an upper limit for another input parameter
-        model.widthProperty().addListener(new ChangeListener() {
-            @Override
-            public void changed(ObservableValue ov, Object oldValue,
-                    Object newValue) {
-                textFieldWidth.textProperty().setValue(
-                        String.valueOf(model.getWidth()));
-            }            
-        });
-        // shows a slightly different way than above to do the same
-        model.heightProperty().addListener(new ChangeListener<Number>() { 
-            @Override
-            public void changed(ObservableValue<? extends Number> ov,
-                    Number oldValue, Number newValue) {
-                textFieldHeight.textProperty().setValue(
-                        String.valueOf(newValue));
-            }            
-        });
-
-    }        
+        // NOTE: The view does not reflect changes to the model that are done
+        //       outside the given view.
+    }
 
 
 }

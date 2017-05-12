@@ -25,6 +25,7 @@ package propra.fxml;
 
 import propra.model.GeneratorModel;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -84,5 +85,27 @@ public abstract class GeneratorController {
         getModel().generateInNewThread();
     };
   
-    
+    /**
+     * Can be used in a subclass of GeneratorController to show an Alert if 
+     * there was an invalid user input.
+     * 
+     * @param description The description of the invalid input
+     */     
+    protected void showInputAlert(String description) {
+        showAlert("Invalid Input", description);
+    }
+
+    /**
+     * Can be used in a subclass of GeneratorController to show an Alert.
+     * 
+     * @param title The title of the alert
+     * @param description The description of the alert
+     */     
+    protected void showAlert(String title, String description){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(description);
+        alert.showAndWait();        
+    }    
 }

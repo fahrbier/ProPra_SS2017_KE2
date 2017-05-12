@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 Christoph Baumhardt.
+ * Copyright 2017 holger.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,169 +23,115 @@
  */
 package propra.model;
 
-import propra.SimpleGeneratorState;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
 import propra.model.conway.Board;
 
 /**
  *
- * @author Christoph Baumhardt
+ * @author holger
  */
 public class ConwayGeneratorModel extends GeneratorModel {
-    
-    // restrictions on the input parameters, can be changed
-    private static final int MIN_WIDTH = 1;
-    private static final int MAX_WIDTH = 3000;
-    private static final int MIN_HEIGHT = 1;
-    private static final int MAX_HEIGHT = 3000;
-    
-    // instead of two int use properties, as they can be easily monitored
-    // for changes
-    // tutorial on properties:
-    // https://docs.oracle.com/javase/8/javafx/properties-binding-tutorial/binding.htm
-    private final IntegerProperty width = new SimpleIntegerProperty(600); 
-    private final IntegerProperty height = new SimpleIntegerProperty(400);
-    
-    public ConwayGeneratorModel() {
-        name = "Conway's Game of Life";
-        setGeneratorState(SimpleGeneratorState.Common.READY);
-    }
-    
-    // declare the typical functions associated with properties
-    
-    public final int getWidth() {
-        return width.get();
-    }
-    
-    public final int getHeight() {
-        return height.get();
-    }
 
-    public final void setWidth(int value) {
-        width.set(value);
+    private int height;
+    private int width;
+    private int generations;
+    
+    private Board board;
+    
+    private final int cellSize = 10;
+
+    public ConwayGeneratorModel() {
+        height = 30;
+        width = 50;
+        generations = 50;
     }
     
-    public final void setHeight(int value) {
-        height.set(value);
-    }
     
-    public final IntegerProperty widthProperty() {
+    public int getWidth() {
         return width;
     }
+
+    public void setWidth(int value) {
+        if (value >  0 && value <= 300) {
+            width = value;
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }    
     
-    public final IntegerProperty heightProperty() {
+    public int getHeight() {
         return height;
     }
 
-    // functions for restrictions check
-    
-    static private boolean isValidWidth(String s) {
-        try {
-            int value = Integer.parseInt(s);
-            return MIN_WIDTH <= value && value <= MAX_WIDTH;
+    public void setHeight(int value) {
+        if (value >  0 && value <= 300) {
+            height = value;
+        } else {
+            throw new IllegalArgumentException();
         }
-        catch(NumberFormatException e) {
-            return false;
+    }     
+
+    public int getGenerations() {
+        return generations;
+    }
+
+    public void setGenerations(int value) {
+        if (value >  0 && value <= 100) {
+            generations = value;
+        } else {
+            throw new IllegalArgumentException();
         }
     }
 
-    static private boolean isValidHeight(String s) {
-        try {
-            int value = Integer.parseInt(s);
-            return MIN_HEIGHT <= value && value <= MAX_HEIGHT;
-        }
-        catch(NumberFormatException e) {
-            return false;
-        }
-    }
     
-    // functions to set the properties not only for integer inputs, but
-    // for the needed String inputs
     
-    public void setWidth(String s) {
-        if (isValidWidth(s)) {
-            width.set(Integer.parseInt(s));
-        } else {
-            Alert alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("Invalid Input");
-            alert.setHeaderText(null);
-            alert.setContentText("Width requires an integer value between " + MIN_WIDTH + " and " + MAX_WIDTH + ".");
-            alert.showAndWait();
-        }
-    }
-    
-    public void setHeight(String s) {
-        if (isValidHeight(s)) {
-            height.set(Integer.parseInt(s));
-        } else {
-            Alert alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("Information Dialog");
-            alert.setHeaderText(null);
-            alert.setContentText("Height requires an integer value between " + MIN_HEIGHT + " and " + MAX_HEIGHT + ".");
-            alert.showAndWait();
-        }
-    }
- 
     @Override
-    public void generate() {     
-                
-        // make sure to always use values from the same time:
-        final int w = getWidth();
-        final int h = getHeight();
+    public String getGeneratorName() {
+        return "Conway GoL";
+    }
 
-        setGeneratorState(SimpleGeneratorState.CREATING_CANVAS);
-        canvas = new Canvas(w, h);
+    @Override
+    public void generate() {
+        canvas = new Canvas(width * cellSize, height * cellSize);
+        
+        setGeneratorState("Creating initial Population");
+        
+        board = new Board(width,height,0.2);
+        drawBoardToCanvas(board.getGrid() ,canvas.getGraphicsContext2D());
 
+        setGeneratorState(GeneratorState.FINISHED_READY);
         
+        for (int g=1; g <= generations; g++){
+            try {
+                Thread.sleep(1000);
+            } catch(InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }        
+            setGeneratorState("Generation " + g);
+            board = board.getNextGeneration();        
+            drawBoardToCanvas(board.getGrid() ,canvas.getGraphicsContext2D());
+        }
         
-        
-        setGeneratorState(SimpleGeneratorState.FILLING_BACKGROUND);
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.setFill(Color.WHITE);
-        gc.fillRect(0, 0, w, h);
+    }
+    
 
-        PixelWriter cell;
-        cell = canvas.getGraphicsContext2D().getPixelWriter();
-
-        Board board = new Board(4,4,0.5);
-        board.toConsole();
-        board = board.getNextGeneration();
-        
-        boolean[][] grid = board.getGrid();
+    
+    private void drawBoardToCanvas(boolean[][] grid, GraphicsContext gc) {
         for (int x=0; x < grid.length; x++) {
             for (int y=0; y < grid[x].length; y++) {
                 if (grid[x][y]){
-                    cell.setColor(x, y, Color.RED);
+                    gc.setFill(Color.BLUE);                   
                 }
-            }        
-        }
-        
-        //setGeneratorState(SimpleGeneratorState.DRAWING_BLUE_CIRCLE);
-        //double diameter = Math.min(w, h);
-        //gc.setFill(Color.BLUE);
-        // draw a circle in the middle of the canvas
-        //gc.fillOval((w-diameter)/2., (h-diameter)/2.,
-        //        diameter, diameter);
-
-        setGeneratorState(SimpleGeneratorState.Common.FINISHED_READY);
-        
-        // NOTE: To show the different middle states (they are usually too fast
-        // for the human eye) put the following code snippet before each call
-        // of setGeneratorState(...) inside this method. This simulates a
-        // time-consuming generate process.
-        /*try {
-            Thread.sleep(1000);
-        } catch(InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }*/   
-     
+                else {
+                    gc.setFill(Color.WHITE);
+                }
+                gc.fillOval(x * cellSize, y * cellSize, cellSize, cellSize);
+                
+            }
+        }  
     }
-    
+
+
 }

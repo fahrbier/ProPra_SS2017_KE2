@@ -45,12 +45,14 @@ public class MainApp extends Application {
         primaryStage.setTitle("Algorithmic Art Generator");
         primaryStage.setOnCloseRequest((WindowEvent e) -> {
             Platform.exit(); // closes all open windows gracefully
+            System.exit(0); // exits backgrounded threads too
         });
         try {
             // Load root view from fxml file and set as scene on primary stage
+
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(MainApp.class.getResource("fxml/RootView.fxml"));
-            primaryStage.setScene(new Scene((BorderPane) loader.load()));
+            primaryStage.setScene(new Scene(loader.load()));
             primaryStage.show();
             
         } catch (IOException e) {

@@ -23,7 +23,7 @@
  */
 package propra.fxml;
 
-import propra.GeneratorState;
+import propra.model.GeneratorState;
 import propra.MainApp;
 import propra.SaveImageCallable;
 import java.awt.image.RenderedImage;
@@ -122,7 +122,7 @@ public class RootController implements SaveImageCallable {
     private void showConwayGeneratorView() {
         showSpecializedGeneratorView("Conway Generator",
                 "fxml/ConwayGeneratorView.fxml");
-    }      
+    } 
     
     /**
      * Displays a new view of a specialized Generator.
@@ -133,11 +133,17 @@ public class RootController implements SaveImageCallable {
     private void showSpecializedGeneratorView(String generatorName,
             String pathToFXMLFile){
         if (generatorController != null && 
-                generatorController.getModel().getName().equals(generatorName)){
+                generatorController.getModel().getGeneratorName().
+                        equals(generatorName)){
             // window for specialized Generator exists already -> no creation
             generatorStage.requestFocus();
         } else {
             try {
+                if (generatorController != null) {
+                    // a window for a different specialized Generator exists
+                    // already -> close it first
+                    generatorStage.close();
+                }
                 // create new view
                 FXMLLoader loader = new FXMLLoader();
                 loader.setLocation(MainApp.class.getResource(pathToFXMLFile));
@@ -163,7 +169,7 @@ public class RootController implements SaveImageCallable {
                                         newValue.getDescription());
                                 
                                 if (newValue == 
-                                        GeneratorState.Common.FINISHED_READY) {
+                                        GeneratorState.FINISHED_READY) {
                                     canvas = generatorController.getModel().
                                             getCanvas();
                                     scrollPane.setContent(canvas);
@@ -175,13 +181,14 @@ public class RootController implements SaveImageCallable {
                     }
 
                 });
-
+                
                 statusLabel.textProperty().setValue(
                         generatorController.getModel().getStateDescription());
                 generatorStage = new Stage();
                 generatorStage.setTitle(
-                        generatorController.getModel().getName());
+                        generatorController.getModel().getGeneratorName());
                 generatorStage.setOnCloseRequest((WindowEvent e) -> {
+                    generatorController.getModel().stopBackgroundThread();
                     generatorController = null;
                     statusLabel.textProperty().setValue(
                             "No generator selected.");

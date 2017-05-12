@@ -28,13 +28,10 @@ package propra.model.conway;
  * @author holger
  */
 public class Board {
-    private boolean[][] grid;
-    
-    private int width;
-    
-    private int height;
-    
-    private double aliveness;
+    private final boolean[][] grid;
+    private final int width;
+    private final int height;
+    private final double initialAliveness;
 
     /**
      *
@@ -52,8 +49,8 @@ public class Board {
         return this.height;
     }    
     
-    public double getAliveness() {
-        return this.aliveness;
+    public double getInitialAliveness() {
+        return this.initialAliveness;
     }
     
     /**
@@ -64,55 +61,76 @@ public class Board {
         return grid;
     }
     
-    //-- initiales Board with only dead cells 
-
+    public void setCell(int x, int y, boolean alive) {
+        this.grid[x][y] = alive;
+    }
+    
+    
     /**
-     *
+     * initialize an empty Board (need that to set the next generation up)
      * @param width Width of the board
      * @param height Height of the board
-     * @param aliveness value between 0 and 1 to set the probability that a cell is initialized alive
      */
+    public Board(int width, int height) {
+            
+        this.width = width;
+        this.height = height;
+        this.initialAliveness = 0;
+        
+        grid = new boolean[width][height];
     
-    public Board(int width, int height, double aliveness) {
+    }
+    
+    
+    /**
+     * create a new board with some living cells
+     * @param width Width of the board
+     * @param height Height of the board
+     * @param initialAliveness value between 0 and 1 to set the probability that a cell is initialized alive
+     */
+    public Board(int width, int height, double initialAliveness) {
         
         this.width = width;
         this.height = height;
-        this.aliveness = aliveness;
+        this.initialAliveness = initialAliveness;
         
         
-        grid = new boolean[this.getWidth()][this.getHeight()];
+        grid = new boolean[width][height];
         
-        for (int w=0; w < this.getWidth(); w++) {
-            for (int h=0; h < this.getHeight(); h++) {
-                //-- About the half of the cells should be alive on init
-                if (Math.random() <= this.getAliveness()){
-                    grid[w][h] = true; 
-                }
-                else {
-                    grid[w][h] = false;
-                }
+        for (int x=0; x < width; x++) {
+            for (int y=0; y < height; y++) {
+                grid[x][y] = Math.random() <= initialAliveness;
             }
         }
     }
     
 
     public Board getNextGeneration() {
-        Board tmpBoard = new Board(this.getWidth(), this.getHeight(), this.getAliveness());
+        Board nextBoard = new Board(this.width, this.height);
         
-        for (int w=0; w < this.getWidth(); w++) {
-            for (int h=0; h < this.getHeight(); h++) {
-                System.out.println("[" + w + "," + h + "] has " + this.getAmountMooreNeighbors(w, h) + "neighbors");
-                //switch( this.getAmountMooreNeighbors(w, h) ) {
-                
-                //}
-                
-                //if (grid[w][h]) {
-         }
+        for (int x=0; x < this.width; x++) {
+            for (int y=0; y < this.height; y++) {
+                switch( this.getAmountMooreNeighbors(x, y) ) {
+                    case 2:
+                        if (this.isAlive(x, y)) {
+                            nextBoard.setCell(x, y, true);  
+                        }
+                    break;
+                    case 3:
+                        nextBoard.setCell(x, y, true);
+                    break;
+                    default:
+                        nextBoard.setCell(x, y, false);
+                }                
+            }
         }   
+
         
-        
-        
-        return tmpBoard;
+        return nextBoard;
+    }
+    
+    private boolean isAlive(int x, int y) {
+        return this.grid[x][y];
     }
     
     private int getAmountMooreNeighbors(int x, int y) {
@@ -120,8 +138,8 @@ public class Board {
         for (int xn = x-1; xn <= x+1; xn++) {
             for (int yn = y-1; yn <= y+1; yn++) {
                 if ( //-- check whether I am still on the board and the cell, other than myself, is alive
-                    xn >=0 && xn < this.getWidth() &&
-                    yn >=0 && yn < this.getHeight() &&
+                    xn >=0 && xn < this.width &&
+                    yn >=0 && yn < this.height &&
                     !(x == xn && y == yn) && //-- don't count myself
                     this.grid[xn][yn]
                    ){
@@ -138,10 +156,10 @@ public class Board {
      */
     public void toConsole() {
         
-        for (int w=0; w < this.getWidth(); w++) {
+        for (int w=0; w < this.width; w++) {
             String line = new String();
             System.out.println();
-            for (int h=0; h < this.getHeight(); h++) {
+            for (int h=0; h < this.height; h++) {
                 if (grid[w][h]) {
                     line = line.concat("+");
                 }

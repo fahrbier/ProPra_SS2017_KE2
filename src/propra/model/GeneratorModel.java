@@ -24,7 +24,6 @@
 package propra.model;
 
 import javafx.scene.canvas.Canvas;
-import propra.GeneratorState;
 import propra.SaveImageCallable;
 import java.awt.image.RenderedImage;
 import java.io.File;
@@ -49,8 +48,9 @@ import javax.imageio.ImageIO;
  */
 public abstract class GeneratorModel implements SaveImageCallable {
 
-    protected String name; 
+    protected String generatorName; 
     protected Canvas canvas; // to draw on
+    protected Thread backgroundThread; // to execute generate()
     
     // instead of a normal variable for GeneratorState use a property, as a
     // property can be easily monitored for changes
@@ -60,14 +60,17 @@ public abstract class GeneratorModel implements SaveImageCallable {
 
     public GeneratorModel() {
         // name will be overwritten by specialized GeneratorModel
-        name = "Abstract Generator";
+        //generatorName = "Abstract Generator";
+        generatorName = getGeneratorName();
         generatorState = new SimpleObjectProperty<>(this, "generatorState",
-                GeneratorState.Common.READY);
-    }    
-    
-    public String getName() {
-        return name;
+                GeneratorState.READY);
     }
+    
+    abstract public String getGeneratorName();
+    
+    /*public String getName() {
+        return generatorName;
+    }*/
     
     /**
      * Returns the current canvas (can be null).
@@ -95,13 +98,16 @@ public abstract class GeneratorModel implements SaveImageCallable {
         Task task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                 
+
                 generate();
-                
+                generatorStateProperty().setValue(
+                        GeneratorState.FINISHED_READY);
                 return null;
             }
         };
-        new Thread(task).start();     
+        backgroundThread = new Thread(task);
+        backgroundThread.start();  
+        
     }
 
     /**
@@ -131,7 +137,18 @@ public abstract class GeneratorModel implements SaveImageCallable {
     public final String getStateDescription() {
         return generatorState.get().getDescription();
     } 
-    
+
+    /**
+     * Stops the thread the generate() method uses for its computation.
+     *
+     */    
+    public void stopBackgroundThread(){
+        if(backgroundThread != null && backgroundThread.isAlive()){
+            backgroundThread.interrupt();
+            // toggles only a status bit, which still needs to be checked in 
+            // generate(): if(Thread.currentThread().isInterrupted()){return;}
+        }
+    }
     
     // declare the typical functions associated with properties
     
@@ -147,4 +164,9 @@ public abstract class GeneratorModel implements SaveImageCallable {
         return generatorState;
     }
 
+    // easy setting of GeneratorState
+    
+    public final void setGeneratorState(String description) {
+        generatorState.set(new GeneratorState(description));
+    }
 }

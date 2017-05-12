@@ -25,38 +25,107 @@ package propra.fxml;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TextField;
 import propra.model.ConwayGeneratorModel;
 import propra.model.GeneratorModel;
-import propra.model.SimpleGeneratorModel;
 
 /**
  * FXML Controller class
  *
  * @author holger
  */
-public class ConwayGeneratorController extends GeneratorController {  
+public class ConwayGeneratorController extends GeneratorController {
 
-    ConwayGeneratorModel model;
-
+    @FXML private TextField textFieldWidth;  
+    @FXML private TextField textFieldHeight;
+    @FXML private TextField textFieldGenerations;    
     
+    ConwayGeneratorModel model;   
+
     @Override
-    public ConwayGeneratorModel getModel() {
+    GeneratorModel getModel() {
         return model;
     }
     
-    /**
-     * This automatically called method creates a new SimpleGeneratorModel and 
-     * links it with its view correctly, so that changes on one of them gets
-     * reflected in the other.
-     * 
-     */      
     @Override
     public void initialize() {
-        super.initialize(); // activate buttonGenerate on Enter
-        
+        super.initialize();
         model = new ConwayGeneratorModel();
         
-    }    
+        // display values from model
+        textFieldWidth.textProperty().setValue( String.valueOf(model.getWidth()) );
+        // process changes from the UI
+        textFieldWidth.focusedProperty().addListener((observableBoolean, oldValue, newValue) -> {
+            if (!newValue){ // newValue=0 means no focus -> if no longer focused
+                try {
+                    String s = textFieldWidth.textProperty().getValue();
+                    int w = Integer.parseInt(s);
+                    model.setWidth(w);
+                } catch (IllegalArgumentException ex) {
+                    // catches both the possible NumberFormatException from
+                    // parseInt() as well as the possible IllegalArgumentExcept.
+                    // from SimpleGeneratorModel.setWidth(..)
+                    
+                    // display last valid value for width from model
+                    textFieldWidth.textProperty().setValue(
+                            String.valueOf(model.getWidth()));
+                    showInputAlert("Width requires an integer value between 1" +
+                            " and 300.");
+                }
+            }
+        });      
+        
+        // display values from model
+        textFieldHeight.textProperty().setValue( String.valueOf(model.getHeight()) );
+        // process changes from the UI
+        textFieldHeight.focusedProperty().addListener((observableBoolean, oldValue, newValue) -> {
+            if (!newValue){ // newValue=0 means no focus -> if no longer focused
+                try {
+                    String s = textFieldHeight.textProperty().getValue();
+                    int w = Integer.parseInt(s);
+                    model.setHeight(w);
+                } catch (IllegalArgumentException ex) {
+                    // catches both the possible NumberFormatException from
+                    // parseInt() as well as the possible IllegalArgumentExcept.
+                    // from SimpleGeneratorModel.setWidth(..)
+                    
+                    // display last valid value for width from model
+                    textFieldHeight.textProperty().setValue(
+                            String.valueOf(model.getHeight()));
+                    showInputAlert("Height requires an integer value between 1" +
+                            " and 300.");
+                }
+            }
+        });      
+
+        // display values from model
+        textFieldGenerations.textProperty().setValue( String.valueOf(model.getGenerations()) );
+        // process changes from the UI
+        textFieldGenerations.focusedProperty().addListener((observableBoolean, oldValue, newValue) -> {
+            if (!newValue){ // newValue=0 means no focus -> if no longer focused
+                try {
+                    String s = textFieldGenerations.textProperty().getValue();
+                    int w = Integer.parseInt(s);
+                    model.setGenerations(w);
+                } catch (IllegalArgumentException ex) {
+                    // catches both the possible NumberFormatException from
+                    // parseInt() as well as the possible IllegalArgumentExcept.
+                    // from SimpleGeneratorModel.setWidth(..)
+                    
+                    // display last valid value for width from model
+                    textFieldGenerations.textProperty().setValue(
+                            String.valueOf(model.getGenerations()));
+                    showInputAlert("Generations requires an integer value between 1" +
+                            " and 100.");
+                }
+            }
+        });        
+        
+    }
+
+
+ 
     
 }

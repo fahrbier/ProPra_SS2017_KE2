@@ -21,54 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package propra;
+package propra.model;
 
 /**
- * This interface defines that all objects of type GeneratorState must have a 
- * method called getDescription() which returns a String describing the
- * GeneratorState.
+ * An object of this class describes the state of a GeneratorModel.
  * 
- * This interface also defines constants inside an enum called common that each
- * object of type GeneratorState (or a subtype thereof) can have. Specific
- * constants for specific subtypes of GeneratorState should be declared in a
- * separate enum that implements this interface (see for example 
- * SimpleGeneratorState.java).
- * 
- * A good example how to use an object of type GeneratorState is inside the
- * generate() method of the SimpleGeneratorModel.
+ * There a two fixed states that every GeneratorModel can have which are hence
+ * defined as constants in here. They are set automatically by the program and
+ * are e.g. used to automatically determine when to display a generated canvas.
  *
  * @author Christoph Baumhardt
  */
-public interface GeneratorState {
+public class GeneratorState {
+    
+    public static final GeneratorState READY =
+            new GeneratorState("Ready!");
+    public static final GeneratorState FINISHED_READY =
+            new GeneratorState("Finished! And ready again!");
+    
+    private final String description;
            
     /**
      * Describes current GeneratorState (for status bar).
      * 
      * @return  A String that describes the current state
      */
-    public String getDescription();
+    public String getDescription() {
+        return description;
+    }
     
-    /**
-     * The following enum defines constants that each object of type 
-     * GeneratorState (or any subtype thereof) can have, meaning GeneratorStates
-     * that are common to all Generators can have.
-     */
-    public enum Common implements GeneratorState {
-
-        READY("Ready!"),
-        FINISHED_READY("Finished! And ready again!");
-
-        private final String description;
-
-        Common(String description) {
-            this.description = description;
-        }
-
-        @Override
-        public String getDescription() {
-            return description;
-        }
-        
+    
+    public GeneratorState(String description) {
+        this.description = description;
     }
 
 }

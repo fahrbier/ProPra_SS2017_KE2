@@ -36,13 +36,13 @@
               <MenuItem onAction="#showSimpleGeneratorView" text="_Simple Generator">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="DIGIT1" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator>
-              </MenuItem>
-               <MenuItem onAction="#showConwayGeneratorView" text="_Conway Generator">
+                     </accelerator></MenuItem>
+
+              <MenuItem onAction="#showConwayGeneratorView" text="_Conway Generator">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="DIGIT2" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator>
-              </MenuItem>          
+                     </accelerator></MenuItem>
+                     
             </items>
                <accelerator>
                   <KeyCodeCombination alt="UP" code="G" control="ANY" meta="UP" shift="UP" shortcut="UP" />
