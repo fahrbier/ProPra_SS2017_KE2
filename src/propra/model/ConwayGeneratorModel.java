@@ -119,15 +119,13 @@ public class ConwayGeneratorModel extends GeneratorModel {
 
     
     private void drawBoardToCanvas(boolean[][] grid, GraphicsContext gc) {
+        gc.clearRect(0, 0, width * cellSize, height * cellSize);
         for (int x=0; x < grid.length; x++) {
             for (int y=0; y < grid[x].length; y++) {
                 if (grid[x][y]){
-                    gc.setFill(Color.BLUE);                   
+                    gc.setFill(Color.BLUE);        
+                    gc.fillOval(x * cellSize, y * cellSize, cellSize, cellSize);
                 }
-                else {
-                    gc.setFill(Color.WHITE);
-                }
-                gc.fillOval(x * cellSize, y * cellSize, cellSize, cellSize);
                 
             }
         }  
