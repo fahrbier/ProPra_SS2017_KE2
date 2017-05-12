@@ -25,15 +25,15 @@ package propra.fxml;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
-import propra.model.ConwayGeneratorModel;
 import propra.model.GeneratorModel;
+import propra.model.SierpinskiGeneratorModel;
 
 /**
  * FXML Controller class
  *
  * @author holger
  */
-public class ConwayGeneratorController extends GeneratorController {
+public class SierpinskiGeneratorController extends GeneratorController {
 
     @FXML private TextField textFieldWidth;  
     @FXML private TextField textFieldHeight;
@@ -49,7 +49,7 @@ public class ConwayGeneratorController extends GeneratorController {
     @Override
     public void initialize() {
         super.initialize();
-        model = new ConwayGeneratorModel();
+        model = new SierpinskiGeneratorModel();
         
         // display values from model
         textFieldWidth.textProperty().setValue( String.valueOf(model.getWidth()) );
