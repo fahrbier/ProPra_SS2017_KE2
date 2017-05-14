@@ -129,6 +129,12 @@ public class RootController implements SaveImageCallable {
         showSpecializedGeneratorView("Sierpinski Dreieck Generator",
                 "fxml/SierpinskiGeneratorView.fxml");    
     }
+
+    @FXML
+    private void showWaldbrandGeneratorView() {
+        showSpecializedGeneratorView("Waldbrand Simulator Generator",
+                "fxml/WaldbrandGeneratorView.fxml");    
+    }
     
     /**
      * Displays a new view of a specialized Generator.

@@ -47,7 +47,11 @@
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="DIGIT3" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>                     
-                                                               
+
+              <MenuItem onAction="#showWaldbrandGeneratorView" text="_Waldbrand Simulations Generator">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="DIGIT4" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>                                                                
             </items>
                <accelerator>
                   <KeyCodeCombination alt="UP" code="G" control="ANY" meta="UP" shift="UP" shortcut="UP" />
