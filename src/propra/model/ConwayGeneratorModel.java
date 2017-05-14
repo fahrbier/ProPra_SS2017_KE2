@@ -26,9 +26,6 @@ package propra.model;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import propra.model.GeneratorModel;
-import propra.model.GeneratorState;
-import propra.model.conway.Board;
 import propra.model.conway.Board;
 
 /**
@@ -108,7 +105,7 @@ public class ConwayGeneratorModel extends GeneratorModel {
         
         for (int g=1; g <= generations; g++){
             try {
-                Thread.sleep(1000);
+                Thread.sleep(500);
             } catch(InterruptedException ex) {
                 Thread.currentThread().interrupt();
             }        
@@ -128,8 +125,7 @@ public class ConwayGeneratorModel extends GeneratorModel {
                 if (grid[x][y]){
                     gc.setFill(Color.BLUE);        
                     gc.fillOval(x * cellSize, y * cellSize, cellSize, cellSize);
-                }
-                
+                }                
             }
         }  
     }

@@ -47,22 +47,46 @@ public class SierpinskiGeneratorModel extends GeneratorModel {
         return "Sierpinski Triangle";
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int value) {
+        if (value >  0 && value <= 300) {
+            width = value;
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }    
+
+    public int getGenerations() {
+        return generations;
+    }
+
+    public void setGenerations(int value) {
+        if (value >  0 && value <= 100) {
+            generations = value;
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+    
+    public SierpinskiGeneratorModel() {
+        width = 100;
+        generations = 50;
+    }
+    
     @Override
     void generate() {
-
         
-        
-        System.out.println ("generate sierpinski");
-        
-        this.width = 100;
-        this.generations = 50;
-         
         int height = this.generations;
         
         canvas = new Canvas(width * cellSize, height * cellSize);
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.clearRect(0, 0, width * cellSize, height * cellSize);
         
         row = new Row(this.width, false);
-        drawRowToCanvas(row.getRow() , 0, canvas.getGraphicsContext2D());
+        drawRowToCanvas(row.getRow() , 0, gc);
          
         setGeneratorState(GeneratorState.FINISHED_READY);
          
@@ -90,5 +114,4 @@ public class SierpinskiGeneratorModel extends GeneratorModel {
         
     }
 
-    
 }

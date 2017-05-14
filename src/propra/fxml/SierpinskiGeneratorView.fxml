@@ -21,32 +21,25 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label text="Width">
+            <Label text="Width" GridPane.rowIndex="0" GridPane.columnIndex="0">
                <GridPane.margin>
                   <Insets left="10.0" />
                </GridPane.margin>
             </Label>
-            <Label text="Height" GridPane.rowIndex="1">
+
+            <Label text="Generations" GridPane.rowIndex="1" GridPane.columnIndex="0">
                <GridPane.margin>
                   <Insets left="10.0" />
                </GridPane.margin>
-            </Label>
-            <Label text="Generations" GridPane.rowIndex="2">
-               <GridPane.margin>
-                  <Insets left="10.0" />
-               </GridPane.margin>
-            </Label>            
-            <TextField fx:id="textFieldWidth" GridPane.columnIndex="1">
+            </Label>      
+                  
+            <TextField fx:id="textFieldWidth" GridPane.rowIndex="0" GridPane.columnIndex="1">
                <GridPane.margin>
                   <Insets right="10.0" />
                </GridPane.margin>
             </TextField>
-            <TextField fx:id="textFieldHeight" GridPane.columnIndex="1" GridPane.rowIndex="1">
-               <GridPane.margin>
-                  <Insets right="10.0" />
-               </GridPane.margin>
-            </TextField>
-            <TextField fx:id="textFieldGenerations" GridPane.columnIndex="1" GridPane.rowIndex="2">
+
+            <TextField fx:id="textFieldGenerations" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets right="10.0" />
                </GridPane.margin>

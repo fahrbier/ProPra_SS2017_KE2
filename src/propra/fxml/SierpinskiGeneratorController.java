@@ -36,7 +36,6 @@ import propra.model.SierpinskiGeneratorModel;
 public class SierpinskiGeneratorController extends GeneratorController {
 
     @FXML private TextField textFieldWidth;  
-    @FXML private TextField textFieldHeight;
     @FXML private TextField textFieldGenerations;    
     
     SierpinskiGeneratorModel model;   
@@ -45,12 +44,64 @@ public class SierpinskiGeneratorController extends GeneratorController {
     GeneratorModel getModel() {
         return model;
     }
+
+        
+
+
     
     @Override
     public void initialize() {
         super.initialize();
         model = new SierpinskiGeneratorModel();
         
+        // display values from model
+        textFieldWidth.textProperty().setValue( String.valueOf(model.getWidth()) );
+        // process changes from the UI
+        textFieldWidth.focusedProperty().addListener((observableBoolean, oldValue, newValue) -> {
+            if (!newValue){ // newValue=0 means no focus -> if no longer focused
+                try {
+                    String s = textFieldWidth.textProperty().getValue();
+                    int w = Integer.parseInt(s);
+                    model.setWidth(w);
+                } catch (IllegalArgumentException ex) {
+                    // catches both the possible NumberFormatException from
+                    // parseInt() as well as the possible IllegalArgumentExcept.
+                    // from SimpleGeneratorModel.setWidth(..)
+                    
+                    // display last valid value for width from model
+                    textFieldWidth.textProperty().setValue(
+                            String.valueOf(model.getWidth()));
+                    showInputAlert("Width requires an integer value between 1" +
+                            " and 300.");
+                }
+            }
+        });      
+
+        // display values from model
+        textFieldGenerations.textProperty().setValue( String.valueOf(model.getGenerations()) );
+        // process changes from the UI
+        textFieldGenerations.focusedProperty().addListener((observableBoolean, oldValue, newValue) -> {
+            if (!newValue){ // newValue=0 means no focus -> if no longer focused
+                try {
+                    String s = textFieldGenerations.textProperty().getValue();
+                    int w = Integer.parseInt(s);
+                    model.setGenerations(w);
+                } catch (IllegalArgumentException ex) {
+                    // catches both the possible NumberFormatException from
+                    // parseInt() as well as the possible IllegalArgumentExcept.
+                    // from SimpleGeneratorModel.setWidth(..)
+                    
+                    // display last valid value for width from model
+                    textFieldGenerations.textProperty().setValue(
+                            String.valueOf(model.getGenerations()));
+                    showInputAlert("Generations requires an integer value between 1" +
+                            " and 100.");
+                }
+            }
+        });        
+
+
+
         
     }
 }
