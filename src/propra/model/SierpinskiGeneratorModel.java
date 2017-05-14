@@ -23,6 +23,9 @@
  */
 package propra.model;
 
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import propra.model.sierpinski.Row;
 
 /**
@@ -34,7 +37,10 @@ public class SierpinskiGeneratorModel extends GeneratorModel {
     private int width;
     private int generations;
     
+    
     private Row row;
+    
+    private final int cellSize = 5;
     
     @Override
     public String getGeneratorName() {
@@ -44,20 +50,45 @@ public class SierpinskiGeneratorModel extends GeneratorModel {
     @Override
     void generate() {
 
-         System.out.println ("generate sierpinski");
+        
+        
+        System.out.println ("generate sierpinski");
+        
+        this.width = 100;
+        this.generations = 50;
          
-         this.generations = 100;
+        int height = this.generations;
+        
+        canvas = new Canvas(width * cellSize, height * cellSize);
+        
+        row = new Row(this.width, false);
+        drawRowToCanvas(row.getRow() , 0, canvas.getGraphicsContext2D());
          
-         row = new Row(51,false);
-         row.toConsole();
+        setGeneratorState(GeneratorState.FINISHED_READY);
          
-         for (int g=0; g < this.generations; g++){
-             row = row.getNextGeneration();
-             row.toConsole();
-         }
-         
-         
-
+        for (int g=1; g <= this.generations; g++){
+           try {
+               Thread.sleep(500);
+           } catch(InterruptedException ex) {
+               Thread.currentThread().interrupt();
+           }        
+           setGeneratorState("Generation " + g);
+           row = row.getNextGeneration();        
+            
+           drawRowToCanvas(row.getRow() , g, canvas.getGraphicsContext2D());
+        }
     }
+
+    private void drawRowToCanvas(boolean[] row, int gen, GraphicsContext gc) {
+ 
+        for (int x=0; x < row.length; x++) {
+            if (row[x]){
+                gc.setFill(Color.BLUE);        
+                gc.fillOval(x * cellSize, gen * cellSize, cellSize, cellSize);
+            }
+        }
+        
+    }
+
     
 }

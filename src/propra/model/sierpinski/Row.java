@@ -32,6 +32,10 @@ public class Row {
     private final int width;
     private final boolean[] row;
 
+    public boolean[] getRow() {
+        return row;
+    }
+    
     public void setCell(int x, boolean alive) {
         this.row[x] = alive;
     }    
