@@ -26,6 +26,9 @@ package propra.model;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import propra.model.GeneratorModel;
+import propra.model.GeneratorState;
+import propra.model.conway.Board;
 import propra.model.conway.Board;
 
 /**

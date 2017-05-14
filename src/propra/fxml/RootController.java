@@ -127,7 +127,7 @@ public class RootController implements SaveImageCallable {
     @FXML
     private void showSierpinskiGeneratorView() {
         showSpecializedGeneratorView("Sierpinski Dreieck Generator",
-                "fxml/SierpinskyGeneratorView.fxml");    
+                "fxml/SierpinskiGeneratorView.fxml");    
     }
     
     /**

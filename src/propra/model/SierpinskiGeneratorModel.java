@@ -23,20 +23,41 @@
  */
 package propra.model;
 
+import propra.model.sierpinski.Row;
+
 /**
  *
  * @author holger
  */
 public class SierpinskiGeneratorModel extends GeneratorModel {
 
+    private int width;
+    private int generations;
+    
+    private Row row;
+    
     @Override
     public String getGeneratorName() {
-        return "Sierpinski Dreieck";
+        return "Sierpinski Triangle";
     }
 
     @Override
     void generate() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+         System.out.println ("generate sierpinski");
+         
+         this.generations = 100;
+         
+         row = new Row(51,false);
+         row.toConsole();
+         
+         for (int g=0; g < this.generations; g++){
+             row = row.getNextGeneration();
+             row.toConsole();
+         }
+         
+         
+
     }
     
 }
